@@ -8,42 +8,54 @@ App  = {
 
     build: function(event){
         const dsa = new DSA(web3);
-        dsa.build().then(console.log);
-    },
-
-    getAccounts: async function(){
-        const dsa = new DSA(web3);
-        dsa.address.read.core = "0x2Ec9378446e3873e3aFE9CAEe2056b318712B3db";
-        await dsa.getAccounts(window.ethereum.selectedAddress).then(console.log);
-  
+        dsa.build()
+            .then(function(data){
+                console.log(data);
+                return App.getAccounts;
+            });
     },
 
     transfer: function(){
         
         const dsa = new DSA(web3);
-        dsa.transfer({
-            "token": "eth", 
-            "amount": dsa.tokens.fromDecimal(1, "eth"), 
-            "to" : "0xeD59dE5901B7dc96A265fF2893cF037de32978A9", 
-            "from": window.ethereum.selectedAddress
-          }).then(data  => {
-              console.log(data);
-              return  data 
-          }).catch(error  => {
-              return  error
-          });
+        dsa.address.read.core = "0x2Ec9378446e3873e3aFE9CAEe2056b318712B3db";
+        dsa.getAccounts(window.ethereum.selectedAddress)
+            .then(function(data){
+                dsa.transfer({
+                    "token": "eth",
+                    "amount": dsa.tokens.fromDecimal(1, "eth"), 
+                    "to" : data[0].address, 
+                    "from": window.ethereum.selectedAddress,   
+                }).then(data  => {
+                    return  data
+                }).catch(error  => {
+                    return  error
+                });
+            })
     },
 
+    getAccounts: async function(){
+        const dsa = new DSA(web3);
+        dsa.address.read.core = "0x2Ec9378446e3873e3aFE9CAEe2056b318712B3db";
+        await dsa.getAccounts(window.ethereum.selectedAddress)
+            .then(function(data){
+                console.log(data);
+                dsa.setInstance(data[0].id);
+            });
+  
+    },
     compoundDeposit: function(){
         const dsa = new DSA(web3);
-        dsa.setInstance("96");
-        let spells = dsa.Spell();
-        spells.add({
-            connector: "compound",
-            method: "deposit",
-            args: [dsa.tokens.info.eth.address, dsa.tokens.fromDecimal(1, "eth"), 0, 0]
-          });
-        dsa.cast(spells).then(console.log) 
+        App.getAccounts()
+            .then(function(data){
+                let spells = dsa.Spell();
+                spells.add({
+                    connector: "compound",
+                    method: "deposit",
+                    args: [dsa.tokens.info.eth.address, dsa.tokens.fromDecimal(1, "eth"), 0, 0]
+                });
+                dsa.cast(spells).then(console.log) 
+            })    
     }
 
 };
