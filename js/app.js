@@ -1,5 +1,6 @@
 App  = {
     dsa: null,
+    vaultid: null,
 
     init: function(){
         dsa = new DSA(web3);
@@ -8,7 +9,6 @@ App  = {
     },
     
     bindEvents: function(){
-        //const dsa = new DSA(web3);
         $(document).on('click', '#build', App.build);
         $(document).on('click', '#getAccounts', App.getAccounts);
         $(document).on('click', '#transfer', App.transfer);
@@ -16,7 +16,6 @@ App  = {
     },
 
     build: function(event){
-        //const dsa = new DSA(web3);
         dsa.build()
             .then(function(data){
                 console.log(data);
@@ -24,13 +23,12 @@ App  = {
             });
     },
 
-    transfer: function(){     
-        //const dsa = new DSA(web3);     
+    transfer: function(){        
         dsa.getAccounts(window.ethereum.selectedAddress)
             .then(function(data){
                 dsa.transfer({
                     "token": "eth",
-                    "amount": dsa.tokens.fromDecimal(0.5, "eth"), 
+                    "amount": dsa.tokens.fromDecimal(1, "eth"), 
                     "to" : data[0].address, 
                     "from": window.ethereum.selectedAddress,   
                 }).then(data  => {
@@ -41,18 +39,16 @@ App  = {
             })
     },
 
-    getAccounts: async function(){
-        //const dsa = new DSA(web3);   
+    getAccounts: async function(){ 
         await dsa.getAccounts(window.ethereum.selectedAddress)
             .then(function(data){
                 console.log(data);
                 dsa.setInstance(data[0].id);
-                console.log(data[0].id)
+                return data
             });
     },
 
     compoundDeposit:function(){
-        //const dsa = new DSA(web3);
         App.getAccounts()
             .then(async function(data){
                 await dsa.setInstance(97);
@@ -66,21 +62,44 @@ App  = {
             })    
     },
 
-    // makerdaoDeposit: function(){
-    //     //const dsa = new DSA(web3);
-    //     App.getAccounts()
-    //         .then(function(data){
-    //             let spells = dsa.Spell();
-    //             spells.add({
-    //                 connector: "maker",
-    //                 method: "deposit",
-    //                 args: [dsa.tokens.info.eth.address, dsa.tokens.fromDecimal(1, "eth"), 0, 0]
-    //             });
-    //             dsa.cast(spells).then(console.log) 
-    //         })    
-    // },
 
+    makerdaoDeposit: function(){
+        App.getAccounts()
+            .then(async function(data){
+                await dsa.setInstance(data[0].id);
+                let spells = dsa.Spell();
+                spells.add({
+                    connector: "maker",
+                    method: "deposit",
+                    args: [vaultid, dsa.tokens.fromDecimal(1, "eth"), getId, setId]
+                });
+                dsa.cast(spells).then(console.log) 
+            })    
+    },
+
+    makeVault: function(){
+        App.getAccounts()
+            .then(async function(data){
+                await dsa.setInstance(data[0].id);
+                let spells = dsa.Spell();
+                spells.add({
+                    connector: "maker",
+                    method: "open",
+                    args: [coll_name]
+                });
+                dsa.cast(spells)
+                .then(function(){
+                    dsa.maker.getVaults(address)
+                    .then(function(data){
+                        
+                    })
+                }) 
+            })    
+    },
     
+    deposit: function(){
+
+    }
 
 };
 
@@ -95,8 +114,6 @@ window.onload = async function() {
     } else {
         //window.web3 = new Web3(customProvider)
     }
-    
-
     return App.init();
     
 };
