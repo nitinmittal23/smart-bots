@@ -5,12 +5,13 @@ App  = {
     init: function(){
         dsa = new DSA(web3);
         dsa.address.read.core = "0x2Ec9378446e3873e3aFE9CAEe2056b318712B3db";
+        App.getAccounts();
         return App.bindEvents();
     },
-    
+
     bindEvents: function(){
         $(document).on('click', '#build', App.build);
-        $(document).on('click', '#getAccounts', App.getAccounts);
+        $(document).on('click', '#deposit', App.deposit);
         $(document).on('click', '#transfer', App.transfer);
         $(document).on('click', '#compoundDeposit', App.compoundDeposit);
     },
@@ -44,19 +45,35 @@ App  = {
             .then(function(data){
                 console.log(data);
                 dsa.setInstance(data[0].id);
-                return data
+                $('#address').text(data[0].address);
+                return data;
             });
+    },
+
+    deposit:function(){
+        if(a){
+            App.compoundDeposit()
+                .then(console.log)
+        }else{
+            App.makerDeposit()
+                .then(console.log)
+        }
     },
 
     compoundDeposit:function(){
         App.getAccounts()
-            .then(async function(data){
-                await dsa.setInstance(97);
+            .then(async function(data){ 
+                await dsa.setInstance(data[0].id);
                 let spells = dsa.Spell();
+                spells.add({
+                    connector: "basic",
+                    method: "deposit",
+                    args: [dsa.tokens.info.dai.address, dsa.tokens.fromDecimal(1, "dai"), 0, 0]
+                });
                 spells.add({
                     connector: "compound",
                     method: "deposit",
-                    args: [dsa.tokens.info.eth.address, dsa.tokens.fromDecimal(1, "eth"), 0, 0]
+                    args: [dsa.tokens.info.dai.address, dsa.tokens.fromDecimal(1, "dai"), 0, 0]
                 });
                 dsa.cast(spells).then(console.log) 
             })    
@@ -69,9 +86,14 @@ App  = {
                 await dsa.setInstance(data[0].id);
                 let spells = dsa.Spell();
                 spells.add({
-                    connector: "maker",
+                    connector: "basic",
                     method: "deposit",
-                    args: [vaultid, dsa.tokens.fromDecimal(1, "eth"), getId, setId]
+                    args: [dsa.tokens.info.dai.address, dsa.tokens.fromDecimal(1, "dai"), 0, 0]
+                });
+                spells.add({
+                    connector: "maker",
+                    method: "depositDai",
+                    args: [dsa.tokens.fromDecimal(1, "dai"), 0, 0]
                 });
                 dsa.cast(spells).then(console.log) 
             })    
