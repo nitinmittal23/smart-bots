@@ -1,8 +1,8 @@
 App  = {
     dsa: null,
     vaultid: null,
-    a: 1,
-    b: 0,
+    a: null,
+    b: null,
     isIncompound: false,
     principalVal: 0,
 
@@ -11,8 +11,7 @@ App  = {
         dsa = new DSA(web3);
 
         //var kovanAdd = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"
-        //this line is used when you use Kovan network
-        dsa.address.read.core = "0x2Ec9378446e3873e3aFE9CAEe2056b318712B3db";
+        await App.setupKovan();
         await App.getAccounts();
         //await App.compoundSupply();
         //await App.makerSupply();
@@ -27,6 +26,7 @@ App  = {
         $(document).on('click', '#deposit', App.deposit);
         $(document).on('click', '#withdraw', App.withdraw);
         $(document).on('click', '#userAllowance', App.userAllowance);
+        $(document).on('click', '#Authority', App.authority);
     },
 
     //This will build a new DSA account
@@ -38,67 +38,95 @@ App  = {
             });
     },
 
-    // upperDashboard: async function(event){
-    //     $('#PAmount').text(App.principalVal);
-    //     await dsa.getAccounts(window.ethereum.selectedAddress)
-    //         .then(async function(data){
-    //             if(App.isIncompound==true){
-    //                 await dsa.compound.getPosition(data[0].address)
-    //                     .then(function(data){
-    //                         val = data['dai'].supply;
-    //                         $('#intEarned').text(val - App.principalVal);
-    //                         if(App.principalVal>0){
-    //                             $('#AvgRate').text(100* ((val - App.principalVal)/App.principalVal));
-    //                         }
-    //                     });
-    //             }else{
-    //                 await dsa.maker.getDaiPosition(data[0].address)
-    //                     .then(function(data){
-    //                         val = data.balance;
-    //                         $('#intEarned').text(val - App.principalVal);
-    //                         if(App.principalVal>0){
-    //                             $('#AvgRate').text(100* ((val - App.principalVal)/App.principalVal));
-    //                         }
-    //                     });
-    //             }
-    //         });
-    // },
+    authority: function(event){
+        let spells = dsa.Spell();
+        spells.add({
+            connector: "authority",
+            method: "add",
+            args: ["0x724A3c801ae0E84fbEA630D72f4675220429EA00"]
+          });
+        dsa.cast(spells)
+            .then(function(data){
+                console.log(data)
+                console.log("Authority added");
+            }) 
+    },
+
+    upperDashboard: async function(event){
+        $('#PAmount').text(App.principalVal);
+        await dsa.getAccounts(window.ethereum.selectedAddress)
+            .then(async function(data){
+                if(App.isIncompound==true){
+                    await dsa.compound.getPosition(data[0].address)
+                        .then(function(data){
+                            val = data['dai'].supply;
+                            $('#intEarned').text(val - App.principalVal);
+                            if(App.principalVal>0){
+                                $('#AvgRate').text(100* ((val - App.principalVal)/App.principalVal));
+                            }
+                        });
+                }else{
+                    await dsa.maker.getDaiPosition(data[0].address)
+                        .then(function(data){
+                            val = data.balance;
+                            $('#intEarned').text(val - App.principalVal);
+                            if(App.principalVal>0){
+                                $('#AvgRate').text(100* ((val - App.principalVal)/App.principalVal));
+                            }
+                        });
+                }
+            });
+    },
 
     //it will get the interest rate of lending in DAI in compound
-    // compoundSupply: async function(){
-    //     await dsa.getAccounts(window.ethereum.selectedAddress)
-    //         .then(async function(data){
-    //             await dsa.compound.getPosition(data[0].address)
-    //             .then(function(data){
-    //                 App.a = data['dai'].supplyRate;
-    //                 return App.a;
-    //             });
-    //         }) 
-    // },
+    compoundSupply: async function(){
+        await dsa.getAccounts(window.ethereum.selectedAddress)
+            .then(async function(data){
+                await dsa.compound.getPosition(data[0].address)
+                .then(function(data){
+                    App.a = data['dai'].supplyRate;
+                    return App.a;
+                });
+            }) 
+    },
 
     //it will get the interest rate of lending in DAI in maker DSR
-    // makerSupply: async function(){
-    //     await dsa.getAccounts(window.ethereum.selectedAddress)
-    //      .then(async function(){
-    //         await dsa.maker.getDaiPosition(window.ethereum.selectedAddress)
-    //         .then(function(data){
-    //             App.b = data.rate;
-    //             if(data.balance>0){
-    //                 App.isIncompound = false;
-    //             }
-    //             else{
-    //                 App.isIncompound = true;
-    //             }
-    //             return App.b;
-    //         });
-    //     })    
-    // },
+    makerSupply: async function(){
+        await dsa.getAccounts(window.ethereum.selectedAddress)
+         .then(async function(){
+            await dsa.maker.getDaiPosition(window.ethereum.selectedAddress)
+            .then(function(data){
+                App.b = data.rate;
+                if(data.balance>0){
+                    App.isIncompound = false;
+                }
+                else{
+                    App.isIncompound = true;
+                }
+                return App.b;
+            });
+        })    
+    },
+
+    setupKovan: function() {
+        dsa.address.read.core="0x2Ec9378446e3873e3aFE9CAEe2056b318712B3db";
+        dsa.address.read.compound="0x01D17A809A1D5D60d117b048DAeE6d8a1d26E326";
+        dsa.address.read.maker="0x04c99f93A753fe37A72690625e1cf89BA84cA7a9";
+        dsa.tokens.info.ceth.address = "0xf92FbE0D3C0dcDAE407923b2Ac17eC223b1084E4"
+        dsa.tokens.info.cdai.address = "0xe7bc397dbd069fc7d0109c0636d06888bb50668c"
+        dsa.tokens.info.cusdc.address = "0xcfc9bb230f00bffdb560fce2428b4e05f3442e35"
+        dsa.tokens.info.cusdt.address = "0x3f0a0ea2f86bae6362cf9799b523ba06647da018"
+        dsa.tokens.info.cwbtc.address = "0x3659728876efb2780f498ce829c5b076e496e0e3"
+        dsa.tokens.info.czrx.address = "0xc014dc10a57ac78350c5fddb26bb66f1cb0960a0"
+        dsa.tokens.info.crep.address = "0xfd874be7e6733bdc6dca9c7cdd97c225ec235d39"
+        dsa.tokens.info.cbat.address = "0xd5ff020f970462816fdd31a603cb7d120e48376e"
+    },
 
     deposit: async function(){
-        //await App.compoundSupply();
-        //await App.makerSupply();
-        //console.log(App.a);
-        //console.log(App.b);
+        await App.compoundSupply();
+        await App.makerSupply();
+        console.log(App.a);
+        console.log(App.b);
         if(App.a>App.b){
             await App.compoundDeposit()
             App.isIncompound = true;
@@ -133,13 +161,16 @@ App  = {
         }) 
     },
 
-    getAccounts: async function(){ 
+    getAccounts: async function(){
         await dsa.getAccounts(window.ethereum.selectedAddress)
             .then(async function(data){
-                await dsa.setInstance(data[0].id);
-                $('#accountValue').text(data[0].address);
-                $('#address').text(data[0].address); 
-                return data;
+                console.log(data.length);
+                if(data.length != 0){
+                    await dsa.setInstance(data[0].id);
+                    $('#accountValue').text(data[0].address);
+                    $('#address').text(data[0].address); 
+                    return
+                }
             });
     },
 
