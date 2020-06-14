@@ -5,6 +5,7 @@ App  = {
     b: null,
     isIncompound: false,
     principalVal: 0,
+    biconomy: undefined,
 
 
     init: async function(){
@@ -24,7 +25,7 @@ App  = {
         $(document).on('click', '#trade', App.compoundtoMaker);
         //$(document).on('click', '#transfer', App.transfer);
         $(document).on('click', '#deposit', App.deposit);
-        $(document).on('click', '#withdraw', App.withdraw);
+        $(document).on('click', '#withdraw', App.makerdaoWithdraw);
         $(document).on('click', '#userAllowance', App.userAllowance);
         $(document).on('click', '#Authority', App.authority);
     },
@@ -43,13 +44,13 @@ App  = {
         spells.add({
             connector: "authority",
             method: "add",
-            args: ["0x724A3c801ae0E84fbEA630D72f4675220429EA00"]
+            args: ["0x1ad5508e3de20d554ac914e9995719fe57d14876"]
           });
         dsa.cast(spells)
             .then(function(data){
                 console.log(data)
                 console.log("Authority added");
-            }) 
+            })
     },
 
     upperDashboard: async function(event){
@@ -87,7 +88,7 @@ App  = {
                     App.a = data['dai'].supplyRate;
                     return App.a;
                 });
-            }) 
+            })
     },
 
     //it will get the interest rate of lending in DAI in maker DSR
@@ -105,7 +106,7 @@ App  = {
                 }
                 return App.b;
             });
-        })    
+        })
     },
 
     setupKovan: function() {
@@ -158,7 +159,7 @@ App  = {
             }).then(function(){
                 return App.getAccounts();
             });
-        }) 
+        })
     },
 
     getAccounts: async function(){
@@ -167,8 +168,12 @@ App  = {
                 console.log(data.length);
                 if(data.length != 0){
                     await dsa.setInstance(data[0].id);
+                    if(App.biconomy) {
+                        console.log(`DSA Address set in biconomy`)
+                        App.biconomy.addDSAAddress(data[0].address);
+                    }
                     $('#accountValue').text(data[0].address);
-                    $('#address').text(data[0].address); 
+                    $('#address').text(data[0].address);
                     return
                 }
             });
@@ -193,8 +198,8 @@ App  = {
                 dsa.cast(spells)
                     .then(function(){
                         console.log()
-                    }) 
-            })  
+                    })
+            })
     },
 
     compoundWithdraw:function(){
@@ -212,8 +217,8 @@ App  = {
                     method: "withdraw",
                     args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", "-1", window.ethereum.selectedAddress, 0, 0]
                 });
-                dsa.cast(spells).then(console.log) 
-            })    
+                dsa.cast(spells).then(console.log)
+            })
     },
 
     makerdaoDeposit: function(){
@@ -232,8 +237,8 @@ App  = {
                     method: "depositDai",
                     args: [dsa.tokens.fromDecimal(amount, "dai"), 0, 0]
                 });
-                dsa.cast(spells).then(console.log) 
-            })    
+                dsa.cast(spells).then(console.log)
+            })
     },
 
     makerdaoWithdraw:function(){
@@ -251,16 +256,16 @@ App  = {
                     method: "withdraw",
                     args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", "-1", window.ethereum.selectedAddress, 0, 0]
                 });
-                dsa.cast(spells).then(console.log) 
-            })    
-    }, 
+                dsa.cast(spells).then(console.log)
+            })
+    },
 
     //right now when you click Trade button, this function will work
     compoundtoMaker:function(){
         dsa.getAccounts(window.ethereum.selectedAddress)
             .then(async function(data){
                 await dsa.setInstance(data[0].id)
-                
+
                 //amount = dsa.tokens.fromDecimal(data['dai'].supply, "dai");
                 let spells = dsa.Spell();
                 spells.add({
@@ -273,13 +278,13 @@ App  = {
                     method: "depositDai",
                     args: [dsa.tokens.fromDecimal("1", "dai"), 0, 0]
                 });
-                dsa.cast(spells).then(console.log)  
-            })    
+                dsa.cast(spells).then(console.log)
+            })
     },
 
     makertoCompound:function(){
         dsa.getAccounts(window.ethereum.selectedAddress)
-            .then(async function(data){ 
+            .then(async function(data){
                 await dsa.setInstance(data[0].id)
                 await dsa.maker.getDaiPosition(data[0].address)
                     .then(function(data){
@@ -294,27 +299,52 @@ App  = {
                             method: "deposit",
                             args: [dsa.tokens.info.dai.address, dsa.tokens.fromDecimal(data.balance), 0, 0]
                         });
-                        dsa.cast(spells).then(console.log) 
+                        dsa.cast(spells).then(console.log)
                     })
-                
-            })    
+
+            })
     },
 
-    
+    showErrorMessage: function(message) {
+        alert(message);
+    }
+
+
 };
 
 window.onload = async function() {
 
-    if (window.ethereum) {
-        await window.ethereum.enable()
-        window.web3 = new Web3(window.ethereum)
-    } else if (window.web3) {
-        window.web3 = new Web3(window.web3.currentProvider)
-    } else {
-        //window.web3 = new Web3(customProvider)
+    if (window.Biconomy) {
+        let Biconomy = window.Biconomy;
+        if (window.ethereum) {
+            await window.ethereum.enable();
+            App.biconomy = new Biconomy(window.ethereum,{
+                apiKey: "8nvA_lM_Q.0424c54e-b4b2-4550-98c5-8b437d3118a9",
+                debug: true,
+                forwarderAddress: "0x1ad5508e3de20d554ac914e9995719fe57d14876",
+                smartBotAddress: "0x10e042493BA2899682Fa73db48CD5f35193e0fa7"
+            });
+            window.web3 = new Web3(App.biconomy);
+        } else if (window.web3) {
+            App.biconomy = new Biconomy(window.web3.currentProvider, {
+                apiKey: "8nvA_lM_Q.0424c54e-b4b2-4550-98c5-8b437d3118a9",
+                debug: true,
+                forwarderAddress: "0x1ad5508e3de20d554ac914e9995719fe57d14876",
+                smartBotAddress: "0x10e042493BA2899682Fa73db48CD5f35193e0fa7"
+            });
+            window.web3 = new Web3(App.biconomy);
+        } else {
+            //window.web3 = new Web3(customProvider)
+        }
+
+        App.biconomy.onEvent(App.biconomy.READY, () => {
+            // Initialize your dapp here like getting user accounts etc
+            return App.init();
+        }).onEvent(App.biconomy.ERROR, (error, message) => {
+            // Handle error while initializing mexa
+            showErrorMessage(message);
+        });
     }
-    return App.init();
-    
 };
 
 
