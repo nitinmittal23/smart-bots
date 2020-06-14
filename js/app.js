@@ -13,9 +13,9 @@ App  = {
         //var kovanAdd = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"
         await App.setupKovan();
         await App.getAccounts();
-        //await App.compoundSupply();
-        //await App.makerSupply();
-        //await App.upperDashboard();
+        await App.compoundSupply();
+        await App.makerSupply();
+        await App.upperDashboard();
         return App.bindEvents();
     },
 
