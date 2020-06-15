@@ -22,10 +22,10 @@ App  = {
 
     bindEvents: function(){
         $(document).on('click', '#build', App.build);
-        $(document).on('click', '#trade', App.compoundtoMaker);
+        $(document).on('click', '#trade', App.toggle);
         //$(document).on('click', '#transfer', App.transfer);
         $(document).on('click', '#deposit', App.deposit);
-        $(document).on('click', '#withdraw', App.makerdaoWithdraw);
+        $(document).on('click', '#withdraw', App.withdraw);
         $(document).on('click', '#userAllowance', App.userAllowance);
         $(document).on('click', '#Authority', App.authority);
     },
@@ -126,8 +126,11 @@ App  = {
     deposit: async function(){
         await App.compoundSupply();
         await App.makerSupply();
+        App.a = Math.random()/10;
+        App.b = Math.random()/10;
         console.log(App.a);
         console.log(App.b);
+       
         if(App.a>App.b){
             await App.compoundDeposit()
             App.isIncompound = true;
@@ -139,14 +142,20 @@ App  = {
     },
 
     withdraw: async function(){
-        if(App.isIncompound==true){
-            await App.compoundWithdraw()
-            App.isIncompound = false;
-        }
-        else{
-            await App.makerdaoWithdraw()
-            App.isIncompound = false;
-        }
+        await dsa.getAccounts(window.ethereum.selectedAddress)
+            .then(async function(data){
+                await dsa.maker.getDaiPosition(data[0].address)
+                .then(async function(data){
+                    console.log(data.balance)
+                    console.log("Aaaaaazaaaaaaaaaaa")
+                    if(data.balance==0){
+                        await App.compoundWithdraw()
+                    }
+                    else{
+                        await App.makerdaoWithdraw()
+                    }
+                })
+            })   
     },
 
     userAllowance: function(){
@@ -196,8 +205,10 @@ App  = {
                     args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", dsa.tokens.fromDecimal(amount, "dai"), 0, 0]
                 });
                 dsa.cast(spells)
-                    .then(function(){
-                        console.log()
+                    .then(function(data){
+                        console.log(data);
+                        console.log("Deposited in Compound")
+                        alert("Deposited in Compound")
                     })
             })
     },
@@ -217,7 +228,11 @@ App  = {
                     method: "withdraw",
                     args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", "-1", window.ethereum.selectedAddress, 0, 0]
                 });
-                dsa.cast(spells).then(console.log)
+                dsa.cast(spells).then(function(data){
+                    console.log(data);
+                    console.log("withdrawn from compound");
+                    alert("compound withdraw")
+                })
             })
     },
 
@@ -237,7 +252,11 @@ App  = {
                     method: "depositDai",
                     args: [dsa.tokens.fromDecimal(amount, "dai"), 0, 0]
                 });
-                dsa.cast(spells).then(console.log)
+                dsa.cast(spells).then(function(data){
+                    console.log(data);
+                    console.log("deposited in MakerDao");
+                    alert("Deposited in MakerDao")
+                })
             })
     },
 
@@ -256,7 +275,11 @@ App  = {
                     method: "withdraw",
                     args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", "-1", window.ethereum.selectedAddress, 0, 0]
                 });
-                dsa.cast(spells).then(console.log)
+                dsa.cast(spells).then(function(data){
+                    console.log(data);
+                    console.log("withdrawn from MakerDao");
+                    alert("makerDao withdraw")
+                })
             })
     },
 
@@ -292,18 +315,42 @@ App  = {
                         spells.add({
                             connector: "maker",
                             method: "withdrawDai",
-                            args: ["-1", 0, 0]
+                            args: [dsa.tokens.fromDecimal(data.balance, "dai"), 0, 0]
                         });
                         spells.add({
                             connector: "compound",
                             method: "deposit",
-                            args: [dsa.tokens.info.dai.address, dsa.tokens.fromDecimal(data.balance), 0, 0]
+                            args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", dsa.tokens.fromDecimal(data.balance, "dai"), 0, 0]
                         });
                         dsa.cast(spells).then(console.log)
                     })
 
             })
     },
+
+    toggle: async function(){
+        await dsa.getAccounts(window.ethereum.selectedAddress)
+            .then(async function(data){
+                await dsa.maker.getDaiPosition(data[0].address)
+                    .then(function(data){
+                        App.a = Math.random()/10;
+                        App.b = Math.random()/10;
+                        console.log(App.a);
+                        console.log(App.b);
+                        if(data.balance>0){
+                            if(App.a>App.b){
+                                return App.makertoCompound();
+                            }
+                        }else{
+                            if(App.b>App.a){
+                                return App.compoundtoMaker();
+                            }
+                        }
+                    })
+            })   
+    },
+
+
 
     showErrorMessage: function(message) {
         alert(message);
