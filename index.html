@@ -1,95 +1,453 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+    <title>Savify</title>
+    <link rel="icon" type="image/x-icon" href="/smart-bots-frontend/assets/img/favicon.ico"/>
+    <link href="/smart-bots-frontend/assets/css/loader.css" rel="stylesheet" type="text/css" />
+    <script src="/smart-bots-frontend/assets/js/loader.js"></script>
+    
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,600,700&display=swap" rel="stylesheet">
+    
+    <link href="/smart-bots-frontend/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/smart-bots-frontend/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+    <link href="/smart-bots-frontend/assets/css/structure.css" rel="stylesheet" type="text/css" class="structure" />
+    
+    <!-- END GLOBAL MANDATORY STYLES -->
+
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+    <link href="/smart-bots-frontend/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="/smart-bots-frontend/assets/css/widgets/modules-widgets.css">   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dsa-sdk@v1.3.20/build/dsa.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js"></script>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js"></script> 
     <script type="text/javascript" src="./js/app.js"></script>
     <script type="text/javascript" src="./js/mexa.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <title>smartbots</title>
+    <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->    
 </head>
-<body>
-    <div class = "container">
-        <div class="row">
-            <div class="col-xs-12 col-sm-8 col-sm-push-2">
-                <h1 class="text-center">SavInfinity</h1>
-                <hr/>
-                <br/>
-            </div>
-        </div>
-
-        <div class="col-sm-6 col-sm-push-2 col-md-2 col-md-push-0">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
-                </div>
-                <div class="panel-body">
-                    <button  class = "center btn btn-primary" id="dashboard" type = "button">DashBoard</button><br><br>
-                    <button  class = "center btn btn-primary" id="premium" type = "button">Premium A/c</button><br><br>
-                    <button  class = "center btn btn-primary" id="faq" type = "button">FAQ</button><br><br>
-                    <button  class = "center btn btn-primary" id="contact" type = "button">Contact Us</button><br><br>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-6 col-sm-push-3 col-md-7 col-md-push-0">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title text-center" >My Account</h3>
-                </div>
-
-                <div class="panel-body text-center">
-                    <strong>Account Address: </strong> <span id="accountValue">No Account Created</span><br/>
-                    <strong>Principal Amount: </strong> <span id="PAmount"></span><br/>
-                    <strong>Interest Earned: </strong> <span id="intEarned"></span><br/>
-                    <strong>Avg. Interest Rate: </strong> <span id="AvgRate"></span><br/>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-6 col-sm-push-3 col-md-3 col-md-push-0">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">My Account</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="panel-body text-center">
-                        <button  class = "btn btn-primary" id="build" type = "button">Create Account</button><br><br>
-                        <button class="btn btn-primary" id="userAllowance" type="button">UserAllowance</button><br><br>
-                        <button class="btn btn-primary" id="Authority" type="button">Authority</button><br><br>
+<body class="sidebar-noneoverflow">
+    <!-- BEGIN LOADER -->
+    <div id="load_screen"> <div class="loader"> <div class="loader-content">
+        <div class="spinner-grow align-self-center"></div>
+    </div></div></div>
+    <!--  END LOADER -->
+    
+    <!--  BEGIN NAVBAR  -->
+    <div class="header-container fixed-top">
+    <header class="header navbar navbar-expand-sm">
+            <a class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></a>
+                <div class="media">
+                    <div class="user-img">
+                        <div class="avatar avatar-xl">
+                            <span class="avatar-title rounded-circle"></span>
+                        </div>
                     </div>
-
-                    <input type="number" class="form-control" id="amount" placeholder="Deposit/Withdraw Amount" />
-                    <select name="tokens" id="tokenType">
-                        <option value="dai">DAI</option>
-                        <option value="ether">Eth</option>
-                        <option value="matic">Matic</option>
-                        <option value="usdcoin">USDC</option>
-                    </select>
-
+                    <div class="media-body">
+                        <div class="">
+                            <h5 class="usr-name" id="accountValue">No Account Created</h5>
+                            <p class="msg-title">ACCOUNT UPDATE</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-body text-center">
-                    <button class="btn btn-primary" id="deposit" type="button">Deposit</button>
-                    <button class="btn btn-primary" id="withdraw" type="button">Withdraw</button><br><br>
-                    <button class="btn btn-primary" id="trade" type="button">Toggle</button><br><br>
+            </a>
+        </header>
+    </div>
+    <!--  END NAVBAR  -->
+    
 
+    <!--  BEGIN MAIN CONTAINER  -->
+    <div class="main-container" id="container">
+
+        <div class="overlay"></div>
+        <div class="cs-overlay"></div>
+        <div class="search-overlay"></div>
+
+
+        <!--  BEGIN SIDEBAR  -->
+        <div class="sidebar-wrapper sidebar-theme">
+            <nav id="compactSidebar">
+                <ul class="menu-categories">
+                    <li class="menu active">
+                        <a href="#dashboard" data-active="true" class="menu-toggle">
+                            <div class="base-menu">
+                                <div class="base-icons">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                                </div>
+                                <span>Dashboard</span>
+                            </div>
+                        </a>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </li>
+
+                    <li class="menu">
+                        <a href="#app" data-active="false" class="menu-toggle">
+                            <div class="base-menu">
+                                <div class="base-icons">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                                </div>
+                                <span>White Paper</span>
+                            </div>
+                        </a>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </li>
+                </ul>
+            </nav>
+
+            <div id="compact_submenuSidebar" class="submenu-sidebar">
+
+                <div class="submenu" id="dashboard">
+                    <ul class="submenu-list" data-parent-element="#dashboard"> 
+                        <li class="active">
+                            <a href="index.html"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pie-chart"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg> Analytics </a>
+                      
+                    </ul>
+                </div>
+
+                <div class="submenu" id="about us">
+                    
                 </div>
             </div>
+
         </div>
-    </div>
+        <!--  END SIDEBAR  -->
+        
+        <!--  BEGIN CONTENT AREA  -->
+        <div id="content" class="main-content">
+            <div class="layout-px-spacing">
+             <div class="page-header">
+                    <div class="page-title">
+                        <h3>Dashboard</h3>
+                    </div>
+                </div>
+              <div class="row sales layout-top-spacing">
+
+                <div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-4 layout-spacing">
+                    <div class="widget widget-card-four">
+                        <div class="widget-content">
+                            <div class="w-content">
+                                <div class="w-info">
+                                    <p class="value" id="AvgRate"></p> 
+                                    <p class="value" id="">DAI</p>
+                                    <h6 class="">Savings Rate</h6>
+                                </div>
+                                <div class=""></div>
+                                </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 57%" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>           
+                </div>
+                <div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-4 layout-spacing">
+                    <div class="widget widget-card-four">
+                        <div class="widget-content">
+                            <div class="w-content">
+                                <div class="w-info">
+                                    <p class="value" id ="intEarned"></p> 
+                                    <p class="value" id="">DAI</p>
+                                    <h6 class="">Interest Earned</h6>
+                                </div>
+                                <div class=""></div>
+                                </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 57%" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-4 layout-spacing">
+                    <div class="widget widget-card-four">
+                        <div class="widget-content">
+                            <div class="w-content">
+                                <div class="w-info">
+                                    <p class="value" id = "PAmount"></p> 
+                                    <p class="value" id="">DAI</p>
+                                    <h6 class="">Principal Amount</h6>
+                                </div>
+                            <div class=""></div>          
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 57%" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <br></br>
+                </div>
+
+                <div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-4 layout-spacing">
+                    <div class="widget widget-card-four">
+                        <div class="widget-content">
+                            <div class="w-content">
+                                <div class="w-info">
+                                    <p class="value" id="totalSupply"></p>
+                                    <p class="value" id="">DAI</p>
+                                    <h6 class="">A/C Summary</h6>
+                                </div> 
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 57%" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                </div>   
+
+                    <div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-4 layout-spacing">
+                        <div class="widget widget-activity-four">
+                            <div class="widget-heading">
+                                <h5 class="">Investment Summary </h5>
+                            </div>
+                            <div class="widget-content">
+                                <div class="vistorsBrowser">
+                                    <div class="browser-list">
+                                        <div class="w-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-Compound"></svg>
+                                            <img src="/home/angela/Desktop/pics for project/1_I_TQi1g4FyY6K-UGCtLE9A.png" class="image">
+                                        </div>
+                                        <div class="w-browser-details">
+                                            <div class="w-browser-info">
+                                                <h6>Compound</h6>
+                                                <p class="browser-count">65%</p>
+                                            </div>
+                                            <div class="w-browser-stats">
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: 65%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="browser-list">
+                                        <div class="w-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-compass"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                                        </div>
+                                        <div class="w-browser-details">
+                                            
+                                            <div class="w-browser-info">
+                                                <h6>Maker Dao</h6>
+                                                <p class="browser-count">25%</p>
+                                            </div>
+
+                                            <div class="w-browser-stats">
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 35%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="browser-list">
+                                        <div class="w-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                        </div>
+                                        <div class="w-browser-details">
+                                            
+                                            <div class="w-browser-info">
+                                                <h6>Aave</h6>
+                                                <p class="browser-count">15%</p>
+                                            </div>
+
+                                            <div class="w-browser-stats">
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-gradient-warning" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-2 col-sm-2 col-4 layout-spacing">
+                            <div class="widget widget-activity-four">
+                                    
+                    <div class="layout-px-spacing">
+                        <html>
+                           <head>
+                           <meta name="viewport" content="width=device-width, initial-scale=1">
+                           <style>
+                           .button {
+                             padding: 10px 20px;
+                             font-size: 20px;
+                             text-align: center;
+                             cursor: pointer;
+                             outline: none;
+                             color: #fff;
+                             background-color: #4CAF50;
+                             border: none;
+                             border-radius: 15px;
+                             box-shadow: 0 9px #999;
+                           }
+                           
+                           .button:hover {background-color: #3e8e41}
+                           
+                           .button:active {
+                             background-color: #3e8e41;
+                             box-shadow: 0 5px #666;
+                             transform: translateY(4px);
+                           }
+                           </style>
+                           </head>
+                           <body>
+                            <div class= "panel-body text-center">
+                                <button class="button" id="build">Build</button>
+                                <br><br>
+                            </div>
+
+                            <div class="panel-body text-center">
+                                <input type="text" class="form-control" id="amount" placeholder="Deposit/Withdraw Amount"  /><br>
+                            </div>
+                        
+                            <div class= "panel-body text-center">
+                                    <button class="button" id="deposit">Deposit</button>
+                                    <button class="button" id="trade">Toggle</button>
+                                    <button class="button" id="withdraw">Withdraw</button>
+                                    <br></br>
+                            </div>
+                            
+                             
+                            <div class= "panel-body text-center">
+                                <button class="button" id="userAllowance">Allowance</button>
+                                <button class="button" id = "Authority">Authority</button>
+                                <br></br>
+                            </div>
+
+                            <div class="col-xl-5 col-lg-6 col-md-2 col-sm-2 col-2 layout-spacing" style= "display:inline-block">
+                                <div class="widget widget-activity-four">
+                                    <div class= "widget-heading text-center">
+                                        <h5 class="">Makerdao</h5>
+                                    </div>
+                                    <div class="widget-heading">
+                                        <h6 class="">Interest Rate</h6>
+                                        <div class= "" id="userinterest rate" placeholder="rate" ><br></div>
+                                    </div>
+                                    <div class="widget-heading">
+                                        <h6 class="">Supply Rate</h6><br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-5 col-lg-6 col-md-2 col-sm-2 col-2 layout-spacing" style="display: inline-block">
+                                <div class="widget widget-activity-four">
+                                   <div class= "widget-heading text-center">
+                                       <h5 class="">Compound</h5>
+                                    </div>
+                                    <div class="widget-heading">
+                                        <h6 class="">Interest Rate</h6>
+                                        <div class= "" id="userinterest rate" placeholder="rate" ><br></div>
+                                    </div>
+                                    <div class="widget-heading">
+                                        <h6 class="">Supply Rate</h6><br>
+                                    </div>      
+                                </div>
+                            </div>
+
+                           </body>
+                           </html>
+
+                                                    
+                        </div>
+                </div>
+            </div>
 
 
+                 <div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-4 layout-spacing">
+                        <div class="widget widget-activity-three">
+
+                            <div class="widget-heading">
+                                <h5 class="">Transfer Logs</h5>
+                            </div>
+
+                            <div class="widget-content">
+
+                                <div class="mt-container mx-auto">
+                                    <div class="timeline-line">
+                                        
+                                        <div class="item-timeline timeline-new">
+                                            <div class="t-dot">
+                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                            </div>
+                                            <div class="t-content">
+                                                <div class="t-uppercontent">
+                                                    <h5>Log1</h5>
+                                                    <span class="">27 Feb, 2020</span>
+                                                </div>
+                                                <p><span>Compound(x%) to</span> Maker Dao (y%)</p>
+                                                
+                                            </div>
+                                        </div>
+
+                                        <div class="item-timeline timeline-new">
+                                            <div class="t-dot">
+                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                            </div>
+                                            <div class="t-content">
+                                                <div class="t-uppercontent">
+                                                    <h5>Log2</h5>
+                                                    <span class="">28 Feb, 2020</span>
+                                                </div>
+                                                <p><span>Compound(x%) to</span> Maker Dao (y%)</p>
+                                                
+                                            </div>
+                                        </div>
+
+                                        <div class="item-timeline timeline-new">
+                                            <div class="t-dot">
+                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                            </div>
+                                            <div class="t-content">
+                                                <div class="t-uppercontent">
+                                                    <h5>Log3</h5>
+                                                    <span class="">01 Mar, 2020</span>
+                                                </div>
+                                                <p><span>Compound(x%) to</span> Maker Dao (y%)</p>
+                                            </div>
+                                        </div>
+                                        
+
+                                        <div class="item-timeline timeline-new">
+                                            <div class="t-dot">
+                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                            </div>
+
+                                            <div class="t-content">
+                                                <div class="t-uppercontent">
+                                                    <h5>Log4</h5>
+                                                    <span class="">10 Mar, 2020</span>
+                                                </div>
+                                                <p><span>Compound(x%) to</span> Maker Dao (y%)</p>
+                                            </div>
+                                        </div>
+                                
+                                        <div class="item-timeline timeline-new">
+                                            <div class="t-dot">
+                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                            </div>
+                                            <div class="t-content">
+                                                <div class="t-uppercontent">
+                                                    <h5>Log5</h5>
+                                                    <span class="">06 Apr, 2020</span>
+                                                </div>
+                                            </div>
+                                        </div>     
+                                    </div>
+                                </div> 
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>           
+        <!--  END CONTENT AREA  -->
 
 
-
-
-
+   
+    <!-- END MAIN CONTAINER -->
 
 </body>
 </html>

@@ -7,10 +7,8 @@ App  = {
     principalVal: 0,
     biconomy: undefined,
 
-
     init: async function(){
         dsa = new DSA(web3);
-
         //var kovanAdd = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"
         await App.setupKovan();
         await App.getAccounts();
@@ -23,7 +21,6 @@ App  = {
     bindEvents: function(){
         $(document).on('click', '#build', App.build);
         $(document).on('click', '#trade', App.toggle);
-        //$(document).on('click', '#transfer', App.transfer);
         $(document).on('click', '#deposit', App.deposit);
         $(document).on('click', '#withdraw', App.withdraw);
         $(document).on('click', '#userAllowance', App.userAllowance);
@@ -60,6 +57,7 @@ App  = {
                 if(App.isIncompound==true){
                     await dsa.compound.getPosition(data[0].address)
                         .then(function(data){
+                            $('#totalSupply').text(data['dai'].supply);
                             val = data['dai'].supply;
                             $('#intEarned').text(val - App.principalVal);
                             if(App.principalVal>0){
@@ -147,7 +145,6 @@ App  = {
                 await dsa.maker.getDaiPosition(data[0].address)
                 .then(async function(data){
                     console.log(data.balance)
-                    console.log("Aaaaaazaaaaaaaaaaa")
                     if(data.balance==0){
                         await App.compoundWithdraw()
                     }
@@ -194,6 +191,7 @@ App  = {
                 amount = parseInt($('#amount').val());
                 App.principalVal = App.principalVal + amount;
                 let spells = dsa.Spell();
+                
                 spells.add({
                     connector: "basic",
                     method: "deposit",
@@ -288,20 +286,23 @@ App  = {
         dsa.getAccounts(window.ethereum.selectedAddress)
             .then(async function(data){
                 await dsa.setInstance(data[0].id)
-
+                await dsa.maker.getDaiPosition(data[0].address)
+                    .then(function(data){
+                        let spells = dsa.Spell();
+                        spells.add({
+                            connector: "compound",
+                            method: "withdraw",
+                            args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",dsa.tokens.fromDecimal(data['dai'].supply, "dai"), 0, 0]
+                        });
+                        spells.add({
+                            connector: "maker",
+                            method: "depositDai",
+                            args: [dsa.tokens.fromDecimal(data['dai'].supply, "dai"), 0, 0]
+                        });
+                        dsa.cast(spells).then(console.log)
+                    })
                 //amount = dsa.tokens.fromDecimal(data['dai'].supply, "dai");
-                let spells = dsa.Spell();
-                spells.add({
-                    connector: "compound",
-                    method: "withdraw",
-                    args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",dsa.tokens.fromDecimal("1", "dai"), 0, 0]
-                });
-                spells.add({
-                    connector: "maker",
-                    method: "depositDai",
-                    args: [dsa.tokens.fromDecimal("1", "dai"), 0, 0]
-                });
-                dsa.cast(spells).then(console.log)
+                
             })
     },
 
@@ -350,14 +351,24 @@ App  = {
             })   
     },
 
-
+    timerFunction: function(){
+        //console.log("toggle check");
+        if(window.ethereum.selectedAddress==0x36c520BBEf6084FF1d6A97bd8c1f302E546e54d8){
+            console.log("1423")
+            //App.toggle()
+        }else{
+            console.log("1111")
+        }
+    },
 
     showErrorMessage: function(message) {
         alert(message);
     }
-
-
 };
+
+window.setInterval(function(){
+    App.timerFunction();
+}, 6000);
 
 window.onload = async function() {
 
