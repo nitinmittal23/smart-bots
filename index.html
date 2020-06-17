@@ -48,7 +48,7 @@
                     <div class="media-body">
                         <div class="">
                             <h5 class="usr-name" id="accountValue">No Account Created</h5>
-                            <p class="msg-title">ACCOUNT UPDATE</p>
+                            
                         </div>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                     </li>
 
                     <li class="menu">
-                        <a href="#app" data-active="false" class="menu-toggle">
+                        <a href="https://drive.google.com/file/d/1R_Pq1SSWrR9LLNPqhS_42WVVxrhiGbN0/view?usp=sharing" data-active="false" class="menu-toggle">
                             <div class="base-menu">
                                 <div class="base-icons">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
@@ -129,7 +129,7 @@
                         <div class="widget-content">
                             <div class="w-content">
                                 <div class="w-info">
-                                    <p class="value" id="AvgRate"></p> 
+                                    <p class="value" id="AvgRate">0</p> 
                                     <p class="value" id="">DAI</p>
                                     <h6 class="">Savings Rate</h6>
                                 </div>
@@ -146,7 +146,7 @@
                         <div class="widget-content">
                             <div class="w-content">
                                 <div class="w-info">
-                                    <p class="value" id ="intEarned"></p> 
+                                    <p class="value" id ="intEarned">0</p> 
                                     <p class="value" id="">DAI</p>
                                     <h6 class="">Interest Earned</h6>
                                 </div>
@@ -163,7 +163,7 @@
                         <div class="widget-content">
                             <div class="w-content">
                                 <div class="w-info">
-                                    <p class="value" id = "PAmount"></p> 
+                                    <p class="value" id = "PAmount">0</p> 
                                     <p class="value" id="">DAI</p>
                                     <h6 class="">Principal Amount</h6>
                                 </div>
@@ -182,7 +182,7 @@
                         <div class="widget-content">
                             <div class="w-content">
                                 <div class="w-info">
-                                    <p class="value" id="totalSupply"></p>
+                                    <p class="value" id="totalSupply">0</p>
                                     <p class="value" id="">DAI</p>
                                     <h6 class="">A/C Summary</h6>
                                 </div> 
@@ -295,7 +295,7 @@
                            </head>
                            <body>
                             <div class= "panel-body text-center">
-                                <button class="button" id="build">Build</button>
+                                <button class="button" id="build">Create Account</button>
                                 <br><br>
                             </div>
 
@@ -304,18 +304,16 @@
                             </div>
                         
                             <div class= "panel-body text-center">
-                                    <button class="button" id="deposit">Deposit</button>
-                                    <button class="button" id="trade">Toggle</button>
                                     <button class="button" id="withdraw">Withdraw</button>
+                                    <button class="button" id="deposit">Deposit</button>
                                     <br></br>
                             </div>
                             
-                             
-                            <div class= "panel-body text-center">
+                            <!-- <div class= "panel-body text-center">
                                 <button class="button" id="userAllowance">Allowance</button>
                                 <button class="button" id = "Authority">Authority</button>
                                 <br></br>
-                            </div>
+                            </div> -->
 
                             <div class="col-xl-5 col-lg-6 col-md-2 col-sm-2 col-2 layout-spacing" style= "display:inline-block">
                                 <div class="widget widget-activity-four">
@@ -323,12 +321,10 @@
                                         <h5 class="">Makerdao</h5>
                                     </div>
                                     <div class="widget-heading">
-                                        <h6 class="">Interest Rate</h6>
-                                        <div class= "" id="userinterest rate" placeholder="rate" ><br></div>
+                                        <h6 class="" >Interest Rate</h6>
+                                        <div class= "" id="makerInt" placeholder="rate" ><br></div>
                                     </div>
-                                    <div class="widget-heading">
-                                        <h6 class="">Supply Rate</h6><br>
-                                    </div>
+                                    
                                 </div>
                             </div>
                             <div class="col-xl-5 col-lg-6 col-md-2 col-sm-2 col-2 layout-spacing" style="display: inline-block">
@@ -338,11 +334,9 @@
                                     </div>
                                     <div class="widget-heading">
                                         <h6 class="">Interest Rate</h6>
-                                        <div class= "" id="userinterest rate" placeholder="rate" ><br></div>
+                                        <div class= "" id="compoundInt" placeholder="rate" ><br></div>
                                     </div>
-                                    <div class="widget-heading">
-                                        <h6 class="">Supply Rate</h6><br>
-                                    </div>      
+                                        
                                 </div>
                             </div>
 
