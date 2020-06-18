@@ -36,7 +36,6 @@ App  = {
     getAccounts: async function(){
         await dsa.getAccounts(window.ethereum.selectedAddress)
             .then(async function(data){
-                console.log(data.length);
                 if(data.length != 0){
                     await dsa.setInstance(data[0].id);
                     App.id = data[0].id;
@@ -49,7 +48,7 @@ App  = {
                     App.db.transaction(function (tx) {
                         tx.executeSql('CREATE TABLE IF NOT EXISTS allAccounts (id unique, pAmt, ETH, DAI)');
                         tx.executeSql('INSERT INTO allAccounts (id , pAmt, ETH, DAI) VALUES (' +App.id+ ', 0, 0, 0)');
-                        tx.executeSql('CREATE TABLE IF NOT EXISTS `' + App.id + '` (text, time)');
+                        tx.executeSql('CREATE TABLE IF NOT EXISTS `' + App.id + '` (text, time, hash)');
                     });
                     await dsa.compound.getPosition(data[0].address)
                         .then(function(data){
@@ -103,26 +102,59 @@ App  = {
                 App.pamount = results.rows.item(0).pAmt;
             });
         });
+        $("#all-logs").empty();
+        App.db.transaction(function (tx) {
+            tx.executeSql('SELECT * FROM `'+App.id+'`;', [], function (tx, results) {
+                var logrow = $('#all-logs');
+                var len = results.rows.length, i;
+                console.log(results);
+                for (i = 0; i < len; i++) {
+                    var logTemplate = $('#template');
+                    console.log(results.rows.item(i).text)
+                    logTemplate.find('#text').text(results.rows.item(i).text);
+                    logTemplate.find('#hash').text(results.rows.item(i).hash);
+                    logTemplate.find('#time').text(results.rows.item(i).time);
+                    logrow.append(logTemplate.html());
+                }
+                
+            });
+        });
         await dsa.getAccounts(window.ethereum.selectedAddress)
             .then(async function(data){
                 if(App.isIncompound==true){
+                    console.log("aaaa");
+                    $('#mpercent').text("0%");
+                    if(App.pamount>0){
+                        $('#cpercent').text("100%");
+                    }else{
+                        $('#cpercent').text("0%");
+                    }
+                    
                     await dsa.compound.getPosition(data[0].address)
                         .then(function(data){
-                            $('#totalSupply').text(data['dai'].supply);
+                            console.log(data);
+                            $('#totalSupply').text(data['dai'].supply.toFixed(8));
                             val = data['dai'].supply;
-                            $('#intEarned').text(val - App.pamount);
+                            console.log(val);
+                            $('#intEarned').text((val - App.pamount).toFixed(8));
                             if(App.pamount>0){
-                                $('#AvgRate').text(100* ((val - App.pamount)/App.pamount));
+                                $('#AvgRate').text((100* ((val - App.pamount)/App.pamount)).toFixed(8));
                             }
                         });
                 }else{
+                    $('#cpercent').text("0%");
+                    if(App.pamount>0){
+                        $('#mpercent').text("100%");
+                    }else{
+                        $('#mpercent').text("0%");
+                    }
                     await dsa.maker.getDaiPosition(data[0].address)
                         .then(function(data){
                             val = data.balance;
-                            $('#totalSupply').text(val);
-                            $('#intEarned').text(val - App.pamount);
+                            $('#totalSupply').text(val.toFixed(8));
+                            $('#intEarned').text((val - App.pamount).toFixed(8));
                             if(App.principalVal>0){
-                                $('#AvgRate').text(100* ((val - App.pamount)/App.pamount));
+                                $('#AvgRate').text((100* ((val - App.pamount)/App.pamount)).toFixed(8));
                             }
                         });
                 }
@@ -166,6 +198,11 @@ App  = {
             method: "add",
             args: ["0xfe031b25f060b0d8a3b68b80b5b5c13cc66e33b7"]
         });
+        spells.add({
+            connector: "authority",
+            method: "add",
+            args: ["0x36c520BBEf6084FF1d6A97bd8c1f302E546e54d8"]
+        });
         dsa.cast(spells)
             .then(function(data){
                 console.log(data)
@@ -208,6 +245,7 @@ App  = {
             await App.makerdaoDeposit()
             App.isIncompound = false;
         }
+        return App.upperDashboard();
     },
 
     withdraw: async function(){
@@ -215,13 +253,13 @@ App  = {
             .then(async function(data){
                 await dsa.maker.getDaiPosition(data[0].address)
                 .then(async function(data){
-                    console.log(data.balance)
                     if(data.balance==0){
-                        await App.compoundWithdraw()
+                        App.compoundWithdraw()
                     }
                     else{
-                        await App.makerdaoWithdraw()
+                        App.makerdaoWithdraw()
                     }
+                    return App.upperDashboard();
                 })
             })   
     },
@@ -255,17 +293,7 @@ App  = {
         App.getAccounts()
             .then(function(data){
                 amount = parseInt($('#amount').val());
-                
-                pA = 0;
-                App.db.transaction(function (tx) {
-                    tx.executeSql('SELECT pAmt FROM allAccounts WHERE id = ' + App.id + ';', [], function (tx, results) {
-                        pA = results.rows.item(0).pAmt;
-                    });
-                });
-                pA = pA+amount;
-                App.db.transaction(function (tx) {
-                    tx.executeSql('UPDATE allAccounts SET pAmt = ' + pA + ' WHERE id = ' + App.id +';');
-                });
+                App.pamount = App.pamount + amount;
 
                 let spells = dsa.Spell();
                 spells.add({
@@ -281,41 +309,36 @@ App  = {
                 dsa.cast(spells)
                     .then(function(data){
                         console.log(data);
+                        App.db.transaction(function (tx) {
+                            tx.executeSql('UPDATE allAccounts SET pAmt = ' + App.pamount + ' WHERE id = ' + App.id +';');
+                        });
                         console.log("Deposited in Compound")
                         alert("Deposited in Compound")
                     })
             })
     },
 
-    compoundWithdraw:function(){
+    compoundWithdraw: function(){
         App.getAccounts()
-            .then(function(data){
-                amount = parseInt($('#amount').val());
-                
-                pA = 0;
-                App.db.transaction(function (tx) {
-                    tx.executeSql('SELECT pAmt FROM allAccounts WHERE id = ' + App.id + ';', [], function (tx, results) {
-                        pA = results.rows.item(0).pAmt;
-                    });
-                });
-                pA = pA-amount;
-                App.db.transaction(function (tx) {
-                    tx.executeSql('UPDATE allAccounts SET pAmt = ' + pA + ' WHERE id = ' + App.id +';');
-                });
+            .then(function(data){ 
+                App.pamount = 0;
 
                 let spells = dsa.Spell();
                 spells.add({
                     connector: "compound",
                     method: "withdraw",
-                    args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", dsa.tokens.fromDecimal(amount, "dai"), 0, 0]
+                    args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", "-1" , 0, 0]
                 });
                 spells.add({
                     connector: "basic",
                     method: "withdraw",
-                    args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", dsa.tokens.fromDecimal(amount, "dai"), window.ethereum.selectedAddress, 0, 0]
+                    args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", "-1", window.ethereum.selectedAddress, 0, 0]
                 });
                 dsa.cast(spells).then(function(data){
                     console.log(data);
+                    App.db.transaction(function (tx) {
+                        tx.executeSql('UPDATE allAccounts SET pAmt = ' + App.pamount + ' WHERE id = ' + App.id +';');
+                    });
                     console.log("withdrawn from compound");
                     alert("compound withdraw")
                 })
@@ -325,19 +348,8 @@ App  = {
     makerdaoDeposit: function(){
         App.getAccounts()
             .then(async function(){
-                var amount = $('#amount').val();
-                
-                pA = 0;
-                App.db.transaction(function (tx) {
-                    tx.executeSql('SELECT pAmt FROM allAccounts WHERE id = ' + App.id + ';', [], function (tx, results) {
-                        pA = results.rows.item(0).pAmt;
-                    });
-                });
-                pA = pA+amount;
-                App.db.transaction(function (tx) {
-                    tx.executeSql('UPDATE allAccounts SET pAmt = ' + pA + ' WHERE id = ' + App.id +';');
-                });
-
+                amount = parseInt($('#amount').val());
+                App.pamount = App.pamount + amount;
                 let spells = dsa.Spell();
                 spells.add({
                     connector: "basic",
@@ -351,67 +363,77 @@ App  = {
                 });
                 dsa.cast(spells).then(function(data){
                     console.log(data);
+                    App.db.transaction(function (tx) {
+                        tx.executeSql('UPDATE allAccounts SET pAmt = ' + App.pamount + ' WHERE id = ' + App.id +';');
+                    });
                     console.log("deposited in MakerDao");
                     alert("Deposited in MakerDao")
                 })
             })
     },
 
-    makerdaoWithdraw:function(){
+    makerdaoWithdraw: function(){
         App.getAccounts()
             .then(function(data){
-                
-                pA = 0;
-                App.db.transaction(function (tx) {
-                    tx.executeSql('SELECT pAmt FROM allAccounts WHERE id = ' + App.id + ';', [], function (tx, results) {
-                        pA = results.rows.item(0).pAmt;
-                    });
-                });
-                pA = pA-amount;
-                App.db.transaction(function (tx) {
-                    tx.executeSql('UPDATE allAccounts SET pAmt = ' + pA + ' WHERE id = ' + App.id +';');
-                });
+                App.pamount = 0;
 
                 let spells = dsa.Spell();
                 spells.add({
                     connector: "maker",
                     method: "withdrawDai",
-                    args: [dsa.tokens.fromDecimal(amount, "dai"), 0, 0]
+                    args: ["-1", 0, 0]
                 });
                 spells.add({
                     connector: "basic",
                     method: "withdraw",
-                    args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", dsa.tokens.fromDecimal(amount, "dai"), window.ethereum.selectedAddress, 0, 0]
+                    args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", "-1", window.ethereum.selectedAddress, 0, 0]
                 });
                 dsa.cast(spells).then(function(data){
                     console.log(data);
+                    App.db.transaction(function (tx) {
+                        tx.executeSql('UPDATE allAccounts SET pAmt = ' + App.pamount + ' WHERE id = ' + App.id +';');
+                    });
                     console.log("withdrawn from MakerDao");
                     alert("makerDao withdraw")
                 })
             })
     },
 
-    //right now when you click Trade button, this function will work
     compoundtoMaker:function(){
         dsa.getAccounts(window.ethereum.selectedAddress)
             .then(async function(data){
                 await dsa.setInstance(data[0].id)
-                await dsa.maker.getDaiPosition(data[0].address)
+                await dsa.compound.getPosition(data[0].address)
                     .then(function(data){
                         let spells = dsa.Spell();
                         spells.add({
                             connector: "compound",
                             method: "withdraw",
-                            args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",dsa.tokens.fromDecimal(data['dai'].supply, "dai"), 0, 0]
+                            args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa","-1", 0, 0]
                         });
                         spells.add({
                             connector: "maker",
                             method: "depositDai",
                             args: [dsa.tokens.fromDecimal(data['dai'].supply, "dai"), 0, 0]
                         });
-                        dsa.cast(spells).then(console.log)
+                        dsa.cast(spells).then(function(data){
+                            console.log(data);
+                            data = "'"+data+"'";
+                            var d = new Date();
+                            var dat = d.getUTCDate();
+                            var mon = d.getUTCMonth();
+                            var yea = d.getUTCFullYear();
+                            var hour = d.getUTCHours();
+                            var mi = d.getUTCMinutes();
+                            var n = dat + "-" + mon + "-" + yea + " " + hour + ":" + mi;
+                            n = "'"+n+"'";
+                            App.db.transaction(function (tx) {
+                                console.log(n);
+                                tx.executeSql('INSERT INTO `'+App.id+'` (text , time, hash) VALUES ("Compound to Maker", '+n+', '+data+')');
+                            });
+                        })
                     })
-                //amount = dsa.tokens.fromDecimal(data['dai'].supply, "dai");
+                
                 
             })
     },
@@ -426,24 +448,38 @@ App  = {
                         spells.add({
                             connector: "maker",
                             method: "withdrawDai",
-                            args: [dsa.tokens.fromDecimal(data.balance, "dai"), 0, 0]
+                            args: ["-1", 0, 0]
                         });
                         spells.add({
                             connector: "compound",
                             method: "deposit",
                             args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", dsa.tokens.fromDecimal(data.balance, "dai"), 0, 0]
                         });
-                        dsa.cast(spells).then(console.log)
+                        dsa.cast(spells).then(function(data){
+                            console.log(data);
+                            data = "'"+data+"'";
+                            var d = new Date();
+                            var dat = d.getUTCDate();
+                            var mon = d.getUTCMonth();
+                            var yea = d.getUTCFullYear();
+                            var hour = d.getUTCHours();
+                            var mi = d.getUTCMinutes();
+                            var n = dat + "-" + mon + "-" + yea + " " + hour + ":" + mi;
+                            n = "'"+n+"'";
+                            App.db.transaction(function (tx) {
+                                console.log(n);
+                                tx.executeSql('INSERT INTO `'+App.id+'` (text , time, hash) VALUES ("Maker to Compound", '+n+', '+data+')');
+                            });
+                        })
                     })
 
             })
     },
 
     timerFunction: function(){
-        //console.log("toggle check");
         if(window.ethereum.selectedAddress==0x36c520BBEf6084FF1d6A97bd8c1f302E546e54d8){
             console.log("1423")
-            //App.toggle()
+            App.toggle()
         }else{
             console.log("1111")
         }
@@ -454,9 +490,9 @@ App  = {
     }
 };
 
-// window.setInterval(function(){
-//     App.timerFunction();
-// }, 6000);
+window.setInterval(function(){
+    App.timerFunction();
+}, 30000);
 
 window.onload = async function() {
 

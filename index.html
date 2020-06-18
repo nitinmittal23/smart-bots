@@ -130,8 +130,8 @@
                             <div class="w-content">
                                 <div class="w-info">
                                     <p class="value" id="AvgRate">0</p> 
-                                    <p class="value" id="">DAI</p>
-                                    <h6 class="">Savings Rate</h6>
+                                    <p class="value" id="">Percentage</p>
+                                    <h6 class="">% Earnings</h6>
                                 </div>
                                 <div class=""></div>
                                 </div>
@@ -210,7 +210,7 @@
                                         <div class="w-browser-details">
                                             <div class="w-browser-info">
                                                 <h6>Compound</h6>
-                                                <p class="browser-count">65%</p>
+                                                <p class="browser-count" id = "cpercent"></p>
                                             </div>
                                             <div class="w-browser-stats">
                                                 <div class="progress">
@@ -228,7 +228,7 @@
                                             
                                             <div class="w-browser-info">
                                                 <h6>Maker Dao</h6>
-                                                <p class="browser-count">25%</p>
+                                                <p class="browser-count" id = "mpercent"></p>
                                             </div>
 
                                             <div class="w-browser-stats">
@@ -249,7 +249,7 @@
                                             
                                             <div class="w-browser-info">
                                                 <h6>Aave</h6>
-                                                <p class="browser-count">15%</p>
+                                                <p class="browser-count">0%</p>
                                             </div>
 
                                             <div class="w-browser-stats">
@@ -278,17 +278,17 @@
                              cursor: pointer;
                              outline: none;
                              color: #fff;
-                             background-color: #4CAF50;
+                             background-color: #5C1AC3;
                              border: none;
                              border-radius: 15px;
-                             box-shadow: 0 9px #999;
+                             
                            }
                            
-                           .button:hover {background-color: #3e8e41}
+                           .button:hover {background-color: #7976FE}
                            
                            .button:active {
                              background-color: #3e8e41;
-                             box-shadow: 0 5px #666;
+                             
                              transform: translateY(4px);
                            }
                            </style>
@@ -360,74 +360,33 @@
 
                                 <div class="mt-container mx-auto">
                                     <div class="timeline-line">
-                                        
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Log1</h5>
-                                                    <span class="">27 Feb, 2020</span>
-                                                </div>
-                                                <p><span>Compound(x%) to</span> Maker Dao (y%)</p>
-                                                
-                                            </div>
-                                        </div>
+                                        <ul id="all-logs">
 
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Log2</h5>
-                                                    <span class="">28 Feb, 2020</span>
-                                                </div>
-                                                <p><span>Compound(x%) to</span> Maker Dao (y%)</p>
+                                        </ul>
                                                 
-                                            </div>
-                                        </div>
-
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Log3</h5>
-                                                    <span class="">01 Mar, 2020</span>
+                                        <li id="template" style="display: none;">
+                                            <div class="item-timeline timeline-new">
+                                                <div class="t-dot">
+                                                    <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                                                 </div>
-                                                <p><span>Compound(x%) to</span> Maker Dao (y%)</p>
+                                                <div class="t-content">
+                                                    <h6 id = "time"></h6>
+                                                    <div class="t-uppercontent">
+                                                        <h5 id = "text"><span></span></h5>
+                                                    </div>
+                                                    <p id = "hash"><span></span></p>   
+                                                </div>
                                             </div>
-                                        </div>
+                                        </li>
+
                                         
 
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                            </div>
+                                        
+                                        
 
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Log4</h5>
-                                                    <span class="">10 Mar, 2020</span>
-                                                </div>
-                                                <p><span>Compound(x%) to</span> Maker Dao (y%)</p>
-                                            </div>
-                                        </div>
+                                        
                                 
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Log5</h5>
-                                                    <span class="">06 Apr, 2020</span>
-                                                </div>
-                                            </div>
-                                        </div>     
+                                           
                                     </div>
                                 </div> 
                             </div>
