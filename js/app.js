@@ -133,13 +133,13 @@ App  = {
                     await dsa.compound.getPosition(data[0].address)
                         .then(function(data){
                             console.log(data);
-                            $('#totalSupply').text(data['dai'].supply.toFixed(8));
+                            $('#totalSupply').text(data['dai'].supply.toFixed(5));
                             $('#daiAmount').text(data['dai'].supply.toFixed(5));
                             val = data['dai'].supply;
                             console.log(val);
-                            $('#intEarned').text((val - App.pamount).toFixed(8));
+                            $('#intEarned').text((val - App.pamount).toFixed(5));
                             if(App.pamount>0){
-                                $('#AvgRate').text((100* ((val - App.pamount)/App.pamount)).toFixed(8));
+                                $('#AvgRate').text((100* ((val - App.pamount)/App.pamount)).toFixed(5));
                             }
                         });
                 }else{
@@ -152,11 +152,11 @@ App  = {
                     await dsa.maker.getDaiPosition(data[0].address)
                         .then(function(data){
                             val = data.balance;
-                            $('#totalSupply').text(val.toFixed(8));
+                            $('#totalSupply').text(val.toFixed(5));
                             $('#daiAmount').text(val.toFixed(5));
-                            $('#intEarned').text((val - App.pamount).toFixed(8));
+                            $('#intEarned').text((val - App.pamount).toFixed(5));
                             if(App.principalVal>0){
-                                $('#AvgRate').text((100* ((val - App.pamount)/App.pamount)).toFixed(8));
+                                $('#AvgRate').text((100* ((val - App.pamount)/App.pamount)).toFixed(5));
                             }
                         });
                 }
@@ -424,6 +424,7 @@ App  = {
                             var d = new Date();
                             var dat = d.getUTCDate();
                             var mon = d.getUTCMonth();
+                            mon = mon+1;
                             var yea = d.getUTCFullYear();
                             var hour = d.getUTCHours();
                             var mi = d.getUTCMinutes();
@@ -463,6 +464,7 @@ App  = {
                             var d = new Date();
                             var dat = d.getUTCDate();
                             var mon = d.getUTCMonth();
+                            mon = mon+1;
                             var yea = d.getUTCFullYear();
                             var hour = d.getUTCHours();
                             var mi = d.getUTCMinutes();
@@ -480,7 +482,7 @@ App  = {
 
     timerFunction: function(){
         if(window.ethereum.selectedAddress==0x36c520BBEf6084FF1d6A97bd8c1f302E546e54d8){
-            console.log("1423")
+            console.log("Interest Rate")
             App.toggle()
         }else{
             console.log("1111")
