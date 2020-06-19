@@ -13,10 +13,16 @@ App  = {
         //var kovanAdd = "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa"
         App.db = openDatabase('smartbot', '1.0', 'my first database', 4 * 1024 * 1024);
         await App.setupKovan();
-        await App.getAccounts();
-        await App.interest();
-        await App.upperDashboard();
-        return App.bindEvents();
+        App.interest();
+        App.bindEvents();
+        await dsa.getAccounts(window.ethereum.selectedAddress)
+            .then(async function(data){
+                if(data.length!=0){
+                    await App.getAccounts();
+                    await App.upperDashboard();
+                }
+            })
+        
     },
 
     setupKovan: function() {
