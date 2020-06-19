@@ -134,6 +134,7 @@ App  = {
                         .then(function(data){
                             console.log(data);
                             $('#totalSupply').text(data['dai'].supply.toFixed(8));
+                            $('#daiAmount').text(data['dai'].supply.toFixed(5));
                             val = data['dai'].supply;
                             console.log(val);
                             $('#intEarned').text((val - App.pamount).toFixed(8));
@@ -152,6 +153,7 @@ App  = {
                         .then(function(data){
                             val = data.balance;
                             $('#totalSupply').text(val.toFixed(8));
+                            $('#daiAmount').text(val.toFixed(5));
                             $('#intEarned').text((val - App.pamount).toFixed(8));
                             if(App.principalVal>0){
                                 $('#AvgRate').text((100* ((val - App.pamount)/App.pamount)).toFixed(8));
@@ -226,8 +228,8 @@ App  = {
     interest: function(){
         App.a = Math.random()/10;
         App.b = Math.random()/10;
-        $('#compoundInt').text(App.a);
-        $('#makerInt').text(App.b);
+        $('#compoundInt').text((App.a).toFixed(7));
+        $('#makerInt').text((App.b).toFixed(7));
     },
     
     deposit: async function(){
