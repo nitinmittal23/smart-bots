@@ -7,6 +7,8 @@ App  = {
     id: null,
     isIncompound: false,
     pamount: 0,
+    aave: 0xff795577d9ac8bd7d90ee22b6c1703490b6512fd,
+    compound: 42353454,
 
     init: async function(){
         dsa = new DSA(web3);
@@ -74,7 +76,7 @@ App  = {
         $(document).on('click', '#deposit', App.deposit);
         $(document).on('click', '#withdraw', App.withdraw);
         //$(document).on('click', '#trade', App.toggle);
-        //$(document).on('click', '#userAllowance', App.userAllowance);
+        $(document).on('click', '#allowance', App.userAllowance);
         //$(document).on('click', '#Authority', App.authority);
     },
 
@@ -225,7 +227,7 @@ App  = {
                 token: "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",
                 amount: -1,
                 to: data[0].address
-            }).then(function(){
+            }).then(async function(){
                 return App.getAccounts();
             });
         })
