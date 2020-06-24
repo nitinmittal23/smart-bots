@@ -59523,7 +59523,7 @@
 
           // Check if transaction is sent to DSA Address
           // if(false) {
-          if( to == engine.dsaAddress.toLowerCase()) {
+          if(engine.dsaAddress && to == engine.dsaAddress.toLowerCase()) {
             _logMessage("DSA Transaction intercepted");
             let compoundAddress = "0xaecfa2c0f4bad0ecee46dcd1250cd0334fe28bc0";
             let makerDaoAddress = "0x58bbb677296b6d1b596288b31abb928492400fbf";
