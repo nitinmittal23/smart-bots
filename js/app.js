@@ -389,18 +389,30 @@ App  = {
             .then(async function(data){ 
                 await dsa.compound.getPosition(data[0].address)
                     .then(function(data){
-                        App.pamount = 0;
-                        var amount = data['dai'].supply;
+                        am = parseInt($('#amount').val());
+                        if(am == -1){
+                            App.pamount = 0;
+                            var first = "-1";
+                            var second = dsa.tokens.fromDecimal(data['dai'].supply, "dai")
+                        }else if(am > App.pamount && am < data['dai'].supply){
+                            App.pamount = 0;
+                            var first = dsa.tokens.fromDecimal(am, "dai");
+                            var second = dsa.tokens.fromDecimal(am, "dai");
+                        }else if(am < App.pamount){
+                            App.pamount = App.pamount - am;
+                            var first = dsa.tokens.fromDecimal(am, "dai");
+                            var second = dsa.tokens.fromDecimal(am, "dai");
+                        }
                         let spells = dsa.Spell();
                         spells.add({
                             connector: "compound",
                             method: "withdraw",
-                            args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", "-1" , 0, 0]
+                            args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",first , 0, 0]
                         });
                         spells.add({
                             connector: "basic",
                             method: "withdraw",
-                            args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", dsa.tokens.fromDecimal(amount, "dai"), window.ethereum.selectedAddress, 0, 0]
+                            args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", second, window.ethereum.selectedAddress, 0, 0]
                         });
                         dsa.cast(spells).then(function(data){
                             console.log(data);
@@ -447,18 +459,30 @@ App  = {
             .then(async function(data){ 
                 await dsa.aave.getPosition(data[0].address)
                     .then(function(data){
-                        App.pamount = 0;
-                        var amount = data['dai'].supply;
+                        am = parseInt($('#amount').val());
+                        if(am == -1){
+                            App.pamount = 0;
+                            var first = "-1";
+                            var second = dsa.tokens.fromDecimal(data['dai'].supply, "dai")
+                        }else if(am > App.pamount && am < data['dai'].supply){
+                            App.pamount = 0;
+                            var first = dsa.tokens.fromDecimal(am, "dai");
+                            var second = dsa.tokens.fromDecimal(am, "dai");
+                        }else if(am < App.pamount){
+                            App.pamount = App.pamount - am;
+                            var first = dsa.tokens.fromDecimal(am, "dai");
+                            var second = dsa.tokens.fromDecimal(am, "dai");
+                        }
                         let spells = dsa.Spell();
                         spells.add({
                             connector: "aave",
                             method: "withdraw",
-                            args: ["0xff795577d9ac8bd7d90ee22b6c1703490b6512fd", "-1" , 0, 0]
+                            args: ["0xff795577d9ac8bd7d90ee22b6c1703490b6512fd", first , 0, 0]
                         });
                         spells.add({
                             connector: "basic",
                             method: "withdraw",
-                            args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", dsa.tokens.fromDecimal(amount, "dai"), window.ethereum.selectedAddress, 0, 0]
+                            args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", second, window.ethereum.selectedAddress, 0, 0]
                         });
                         dsa.cast(spells).then(function(data){
                             console.log(data);
