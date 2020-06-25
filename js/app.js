@@ -14,6 +14,8 @@ App  = {
         App.db = openDatabase('smartbot', '1.0', 'my first database', 4 * 1024 * 1024);
         await App.setupKovan();
         await App.setupAaveTokenAddress();
+        // await App.compoundSupply();
+        // await App.aaveSupply();
         App.interest();
         App.bindEvents();
         await dsa.getAccounts(window.ethereum.selectedAddress)
@@ -199,7 +201,7 @@ App  = {
                     }
                     await dsa.aave.getPosition(data[0].address)
                         .then(function(data){
-                            console.log(data);
+                            //console.log(data);
                             $('#totalSupply').text(data['dai'].supply.toFixed(5));
                             $('#daiAmount').text(data['dai'].supply.toFixed(5));
                             val = data['dai'].supply;
@@ -218,19 +220,21 @@ App  = {
     //         .then(async function(data){
     //             await dsa.compound.getPosition(data[0].address)
     //             .then(function(data){
-    //                 App.a = data['dai'].supplyRate;
-    //                 return App.a;
+    //                 console.log(data);
+    //                 console.log(data['dai'].supplyRate)
+    //                 App.a = data['dai'].supplyRate;     
     //             });
     //         })
     // },
 
-    //aaveSupply: async function(){
+    // aaveSupply: async function(){
     //     await dsa.getAccounts(window.ethereum.selectedAddress)
     //         .then(async function(data){
     //             await dsa.aave.getPosition(data[0].address)
     //             .then(function(data){
+    //                 console.log(data);
+    //                 console.log(data['dai'].supplyRate)
     //                 App.b = data['dai'].supplyRate;
-    //                 return App.b;
     //             });
     //         })
     // },
@@ -293,6 +297,7 @@ App  = {
     interest: function(){
         App.a = Math.random()/10;
         App.b = Math.random()/10;
+
         $('#compoundInt').text((App.a).toFixed(7));
         $('#aaveInt').text((App.b).toFixed(7));
     },
@@ -436,7 +441,7 @@ App  = {
                 spells.add({
                     connector: "basic",
                     method: "deposit",
-                    args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", dsa.tokens.fromDecimal(amount, "dai"), 0, 0]
+                    args: ["0xff795577d9ac8bd7d90ee22b6c1703490b6512fd", dsa.tokens.fromDecimal(amount, "dai"), 0, 0]
                 });
                 spells.add({
                     connector: "aave",
@@ -482,7 +487,7 @@ App  = {
                         spells.add({
                             connector: "basic",
                             method: "withdraw",
-                            args: ["0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa", second, window.ethereum.selectedAddress, 0, 0]
+                            args: ["0xff795577d9ac8bd7d90ee22b6c1703490b6512fd", second, window.ethereum.selectedAddress, 0, 0]
                         });
                         dsa.cast(spells).then(function(data){
                             console.log(data);
@@ -493,7 +498,6 @@ App  = {
                             alert("Aave withdraw")
                         })
                     })
-
             })
     },
 
