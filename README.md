@@ -4,7 +4,7 @@ Smart Savings Account DeFi Platform doing automatic funds transfer to the highes
 
 ## Pre-requisites :
 1. Install Metamask in your browser (Chrome : webstore , Mozilla: Add-ons). Code will show a message if its not installed.
-2. Signup in Metamask and add some ether in your Kovan Test Network because all the transactions fee will be deducted from you account.
+2. Signup in Metamask and add some ether in your Kovan Test Network because all the transactions fee will be deducted in Ether.
 
 ## How to run the code:
 1. Install all Dependencies
@@ -17,8 +17,8 @@ Smart Savings Account DeFi Platform doing automatic funds transfer to the highes
 
 3. Create a 1:1 Liquidity pool of both Aave and Compound Dai(just for Kovan Test-net) in your DSA Account. For example in our case, We added 50 Aave Dai and 50 Compound Dai in our DSA Account. 
 
-For Aave DAI - `https://testnet.aave.com/faucet`
-For Compund DAI - `https://app.compound.finance/` or via Uniswap Exchange
+#### For Aave DAI - `https://testnet.aave.com/faucet` 
+#### For Compound DAI - `https://app.compound.finance/` or via Uniswap Exchange
 
 ## InstaDapp DSA Function:
 
@@ -28,7 +28,8 @@ To deposit the DAI in your DSA Account.
 ### WithDraw
 To withdraw the DAI from your DSA Account into your MetaMask.
 
-### Toggle (Happens Automatically in the Background after every 30 seconds after comparing interest rates across platform)
+### Refinance 
+#### (Happens Automatically in the Background after every 30 seconds after comparing interest rates across platform)
 For automatic funds transfer to the Highest Savings return Platform. 
 For this functionality we have used Biconomy and Gnosis forwarder Contract for Automatic funds transfer (Meta Transaction). For this, we had to Integrate our Demo DSA account with Biconomy, Hence, this functionality cannot be used by any other DSA account at this moment. 
 
