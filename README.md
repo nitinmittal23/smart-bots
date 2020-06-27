@@ -15,6 +15,10 @@ Smart Savings Account DeFi Platform doing automatic funds transfer to the highes
 
     `http-server` or `npx http-server`
 
+3. Create a 1:1 Liquidity pool of both Aave and Compound Dai(just for Kovan Test-net) in your DSA Account. For example in our case, We added 50 Aave Dai and 50 Compound Dai in our DSA Account. 
+
+For Aave DAI - `https://testnet.aave.com/faucet`
+For Compund DAI - `https://app.compound.finance/` or via Uniswap Exchange
 
 ## InstaDapp DSA Function:
 
@@ -30,9 +34,9 @@ For this functionality we have used Biconomy and Gnosis forwarder Contract for A
 
 ## Demo UseCase
 
-Since on Kovan testnet, refinance functionality as of now is only available for makerDao and compound. We have build our usecase to transfer funds from Maker to Compound or vice-versa. And since, currently MakerDao gives Saving option for DAI, we have built our Demo Usecase for DAI only. 
+Currently on Kovan testnet of InstaDapp, refinance functionality as of now is only available for Aave, Compound and MakerDao. We have build our usecase to transfer funds from Aave to Compound or vice-versa, MakerDao is excluded since actual supply rate is 0%.
 
-Once Aave and Dydx refinance functionality is available on Kovan, we will Integrate our usecase with these two Platforms as well. Currently, DAI address for Aave and compound are different in Kovan.
+Once Other lending Protocols are available on Kovan, we will Integrate our usecase with those Platforms as well. We aim to capture all the tokens being offered on these protocols for supply on our interface. For the sake of demonstrating our Usecase, we have chosen DAI. 
 
 ## Biconomy support for Gnosis contract wallet
 
