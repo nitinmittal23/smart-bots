@@ -41,6 +41,5 @@ Once Other lending Protocols are available on Kovan, we will Integrate our useca
 
 ## Biconomy support for Gnosis contract wallet
 
-Integration between Gnosis Wallets and Biconomy Relayer Infrastructure has been used by SaviFi Dapp.
-
+By using Authority function, we have given Authority to our Gnosis Forwarder contract to enable meta-transactions. We have used Biconomy relayer Insfrastructure to automatically pay gas fees for our refinance feature (Automatic Funds Transfer). 
 
